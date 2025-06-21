@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    h1 {
+    text-align: center;
+    color: #007acc;
+    margin-bottom: 10px;
+    font-weight: 900;
+    letter-spacing: 1.4px;
+    text-shadow: 0 2px 5px rgba(0,122,204,0.3);
+  }
+  #datePickerContainer {
+    max-width: 300px;
+    margin: 0 auto 30px auto;
+    text-align: center;
+  }
+  #weekRange {
+    font-weight: 600;
+    color: #005f99;
+    margin-top: 6px;
+    font-size: 18px;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 15px 10px; /* horizontal 15px, vertical 10px spacing */
+    table-layout: fixed;
+  }
+  thead tr {
+    background: linear-gradient(90deg, #007acc 0%, #005f99 100%);
+    color: white;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 3px 7px rgba(0, 122, 204, 0.4);
+    z-index: 10;
+  }
+  th, td {
+    padding: 14px 12px;
+    vertical-align: top;
+    word-wrap: break-word;
+    border-radius: 10px;
+  }
+  tbody tr {
+    background: #fff;
+    box-shadow: 0 3px 8px rgba(0, 122, 204, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  tbody tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 122, 204, 0.25);
+  }
+  textarea {
+    width: 100%;
+    min-height: 70px;
+    border: 2px solid #a5c8ff;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+    box-shadow: inset 0 0 8px #cce4ff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  textarea::placeholder {
+    color: #8da9cc;
+    font-style: italic;
+  }
+  textarea:focus {
+    border-color: #005f99;
+    box-shadow: 0 0 8px #005f99;
+    outline: none;
+  }
+  button {
+    margin: 30px auto 0;
+    display: block;
+    width: 220px;
+    padding: 14px 0;
+    font-size: 17px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #005f99, #007acc);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 95, 153, 0.7);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    user-select: none;
+  }
+  button:hover {
+    background: linear-gradient(135deg, #004466, #005f99);
+    box-shadow: 0 10px 30px rgba(0, 95, 153, 0.85);
+    transform: translateY(-2px);
+  }
+
+  input[type="date"] {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid #007acc;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s ease;
+  }
+  input[type="date"]:focus {
+    border-color: #005f99;
+    outline: none;
+  }
+
+  /* Print styles */
+  @media print {
+    #datePickerContainer,
+    button {
+      display: none;
+    }
+    body {
+      background: white;
+      margin: 0;
+      padding: 0;
+      user-select: text;
+    }
+    table {
+      border-spacing: 0;
+      box-shadow: none;
+    }
+    thead tr {
+      position: static;
+      box-shadow: none;
+      background: #007acc !important;
+      color: white !important;
+    }
+    tbody tr {
+      background: white !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+    textarea {
+      border: none !important;
+      box-shadow: none !important;
+      resize: none !important;
+      font-size: 13px;
+      background: transparent !important;
+      padding: 0 !important;
+    }
+  }
+
+</style>
+<body>
+    <section id="lesson" class="module">
+      <h1>📅 Lesson Planner</h1>
+      <h1>Weekly Lesson Planner</h1>
+  
+      <div id="datePickerContainer">
+        <label for="weekStartDate"><strong>Select Week Start Date (Monday):</strong></label><br />
+        <input type="date" id="weekStartDate" />
+        <div id="weekRange"></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Subject</th>
+            <th>Learning Objective</th>
+            <th>Activities</th>
+            <th>Assessment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Monday</td><td><textarea placeholder="Subject"></textarea></td><td><textarea placeholder="Learning Objective"></textarea></td><td><textarea placeholder="Activities"></textarea></td><td><textarea placeholder="Assessment"></textarea></td></tr>
+          <tr><td>Tuesday</td><td><textarea placeholder="Subject"></textarea></td><td><textarea placeholder="Learning Objective"></textarea></td><td><textarea placeholder="Activities"></textarea></td><td><textarea placeholder="Assessment"></textarea></td></tr>
+          <tr><td>Wednesday</td><td><textarea placeholder="Subject"></textarea></td><td><textarea placeholder="Learning Objective"></textarea></td><td><textarea placeholder="Activities"></textarea></td><td><textarea placeholder="Assessment"></textarea></td></tr>
+          <tr><td>Thursday</td><td><textarea placeholder="Subject"></textarea></td><td><textarea placeholder="Learning Objective"></textarea></td><td><textarea placeholder="Activities"></textarea></td><td><textarea placeholder="Assessment"></textarea></td></tr>
+          <tr><td>Friday</td><td><textarea placeholder="Subject"></textarea></td><td><textarea placeholder="Learning Objective"></textarea></td><td><textarea placeholder="Activities"></textarea></td><td><textarea placeholder="Assessment"></textarea></td></tr>
+          <tr><td>Saturday</td><td><textarea placeholder="Subject"></textarea></td><td><textarea placeholder="Learning Objective"></textarea></td><td><textarea placeholder="Activities"></textarea></td><td><textarea placeholder="Assessment"></textarea></td></tr>
+          <tr><td>Sunday</td><td><textarea placeholder="Subject"></textarea></td><td><textarea placeholder="Learning Objective"></textarea></td><td><textarea placeholder="Activities"></textarea></td><td><textarea placeholder="Assessment"></textarea></td></tr>
+        </tbody>
+      </table>
+
+      <button onclick="window.print()">Print Weekly Planner</button>
+    </section>
+    <script>const weekStartInput = document.getElementById('weekStartDate');
+  const weekRangeDisplay = document.getElementById('weekRange');
+
+  // Format date to "MMM DD" (e.g., Jun 08)
+  function formatDate(date) {
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  // Given a Monday date, display range Mon - Sun
+  function updateWeekRange(startDate) {
+    if (!startDate) {
+      weekRangeDisplay.textContent = '';
+      return;
+    }
+    const start = new Date(startDate);
+    // Make sure start date is Monday (if not, adjust to previous Monday)
+    const day = start.getDay();
+    // Sunday=0, Monday=1, so adjust backward to Monday
+    const diff = (day === 0) ? -6 : 1 - day;
+    start.setDate(start.getDate() + diff);
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+
+    weekRangeDisplay.textContent = `Week: ${formatDate(start)} - ${formatDate(end)}`;
+  }
+
+  // Initialize to current week's Monday
+  function getCurrentMonday() {
+    const today = new Date();
+    const day = today.getDay();
+    const diff = (day === 0) ? -6 : 1 - day; // Sunday=0, Monday=1
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + diff);
+    return monday.toISOString().split('T')[0]; // yyyy-mm-dd
+  }
+
+  // Set default date input to current Monday
+  weekStartInput.value = getCurrentMonday();
+  updateWeekRange(weekStartInput.value);
+
+  // Update week range when date changes
+  weekStartInput.addEventListener('change', (e) => {
+    updateWeekRange(e.target.value);
+  });</script>
+</body>
+</html>

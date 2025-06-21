@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📂 Resource Manager Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0077cc;
+      --light: #f2f7ff;
+      --dark-bg: #1e1e2f;
+      --dark-text: #e0e0e0;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--light);
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      position: relative;
+    }
+    .dark-mode-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .container {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.7rem 1.5rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .resource-list {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .resource-item {
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+    body.dark .resource-item {
+      background: #2b2b3d;
+    }
+    .resource-item:hover {
+      transform: translateY(-5px);
+    }
+    .resource-tags span {
+      background: #e0f0ff;
+      color: var(--primary);
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      margin: 0.2rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .search-filter, .sort-clear {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .search-filter input, .search-filter select {
+      flex: 1;
+      margin: 0.5rem;
+    }
+    .stats-bar {
+      background: #f0f9ff;
+      border: 1px solid #cce6ff;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #005fa3;
+    }
+    .favorite {
+      color: gold;
+    }
+    .preview {
+      margin-top: 0.5rem;
+      max-height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    📂 Resource Manager Pro
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌃</button>
+  </header>
+  <div class="container">
+    <div class="form-group">
+      <label for="title">Resource Title</label>
+      <input type="text" id="title" placeholder="e.g. Class 6 Science Notes">
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category">
+        <option value="General">General</option>
+        <option value="Math">Math</option>
+        <option value="Science">Science</option>
+        <option value="English">English</option>
+        <option value="Social Studies">Social Studies</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" placeholder="Brief details about this resource"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="tags">Tags (comma separated)</label>
+      <input type="text" id="tags" placeholder="e.g. notes,chapter 3,diagrams">
+    </div>
+    <div class="form-group">
+      <label for="file">Attach File</label>
+      <input type="file" id="file">
+    </div>
+    <div class="form-group">
+      <button onclick="uploadResource()">Upload Resource</button>
+      <button onclick="resetForm()">Reset Form</button>
+    </div>
+
+    <div class="search-filter">
+      <input type="text" id="searchBar" placeholder="Search resources..." oninput="renderResources()">
+      <select id="filterCategory" onchange="renderResources()">
+        <option value="">All Categories</option>
+        <option value="Math">Math</option>
+        <option value="Science">Science</option>
+        <option value="English">English</option>
+        <option value="Social Studies">Social Studies</option>
+      </select>
+    </div>
+
+    <div class="sort-clear">
+      <button onclick="sortResourcesByDate()">🔄 Sort by Date</button>
+      <button onclick="exportToCSV()">📄 Export to CSV</button>
+      <button onclick="clearAllResources()">🧹 Clear All</button>
+    </div>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="resource-list" id="resourceList"></div>
+  </div>
+
+  <script>
+    let resources = JSON.parse(localStorage.getItem("resources")) || [];
+    let sortNewestFirst = true;
+
+    function uploadResource() {
+      const title = document.getElementById("title").value.trim();
+      const category = document.getElementById("category").value;
+      const description = document.getElementById("description").value.trim();
+      let tags = document.getElementById("tags").value.trim();
+      const fileInput = document.getElementById("file");
+      const file = fileInput.files[0];
+      if (!title || !file) return alert("Title and file are required.");
+
+      if (!tags) {
+        tags = title.split(" ").concat(description.split(" ")).slice(0, 5).join(',');
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const uploadedAt = new Date().toLocaleString();
+        resources.unshift({
+          id: Date.now(),
+          title,
+          category,
+          description,
+          tags,
+          uploadedAt,
+          fileName: file.name,
+          fileData: reader.result,
+          favorite: false
+        });
+        localStorage.setItem("resources", JSON.stringify(resources));
+        resetForm();
+        renderResources();
+      }
+      reader.readAsDataURL(file);
+    }
+
+    function resetForm() {
+      document.getElementById("title").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("tags").value = "";
+      document.getElementById("file").value = "";
+    }
+
+    function deleteResource(id) {
+      if (!confirm("Are you sure you want to delete this resource?")) return;
+      resources = resources.filter(res => res.id !== id);
+      localStorage.setItem("resources", JSON.stringify(resources));
+      renderResources();
+    }
+
+    function toggleFavorite(id) {
+      resources = resources.map(r => r.id === id ? { ...r, favorite: !r.favorite } : r);
+      localStorage.setItem("resources", JSON.stringify(resources));
+      renderResources();
+    }
+
+    function clearAllResources() {
+      if (confirm("This will remove ALL resources. Are you sure?")) {
+        localStorage.removeItem("resources");
+        resources = [];
+        renderResources();
+      }
+    }
+
+    function sortResourcesByDate() {
+      sortNewestFirst = !sortNewestFirst;
+      renderResources();
+    }
+
+    function exportToCSV() {
+      if (!resources.length) return alert("No resources to export.");
+      let csv = 'Title,Category,Description,Tags,Uploaded At,File Name\n';
+      resources.forEach(r => {
+        csv += `"${r.title}","${r.category}","${r.description}","${r.tags}","${r.uploadedAt}","${r.fileName}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resources.csv';
+      a.click();
+    }
+
+    function renderResources() {
+      const searchQuery = document.getElementById("searchBar").value.toLowerCase();
+      const filter = document.getElementById("filterCategory").value;
+      const list = document.getElementById("resourceList");
+      list.innerHTML = "";
+      const sorted = [...resources].sort((a, b) => sortNewestFirst ? b.id - a.id : a.id - b.id);
+
+      const filtered = sorted.filter(res => {
+        return (
+          (!filter || res.category === filter) &&
+          (res.title.toLowerCase().includes(searchQuery) ||
+           res.description.toLowerCase().includes(searchQuery) ||
+           res.tags.toLowerCase().includes(searchQuery))
+        );
+      });
+
+      const stats = document.getElementById("statsBar");
+      stats.innerHTML = `📆 Total: ${resources.length} | 🕛 Last Upload: ${resources[0]?.uploadedAt || 'N/A'} | 📊 Categories: ` + [...new Set(resources.map(r => r.category))].map(cat => `${cat} (${resources.filter(r => r.category === cat).length})`).join(', ');
+
+      filtered.forEach(res => {
+        const div = document.createElement("div");
+        div.className = "resource-item";
+        div.innerHTML = `
+          <h3>${res.title} ${res.favorite ? '<span class="favorite">⭐</span>' : ''}</h3>
+          <p>${res.description}</p>
+          <div class="resource-tags">
+            <span>${res.category}</span>
+            <span>${res.uploadedAt}</span>
+            ${res.tags ? res.tags.split(',').map(tag => `<span>#${tag.trim()}</span>`).join('') : ''}
+          </div>
+          <div class="actions">
+            <a href="${res.fileData}" download="${res.fileName}" class="download">⬇️ Download</a>
+            <button onclick="deleteResource(${res.id})">🗑️ Delete</button>
+            <button onclick="toggleFavorite(${res.id})">⭐ Favorite</button>
+          </div>
+          ${res.fileData.includes('image') ? `<img src="${res.fileData}" class="preview"/>` : res.fileData.includes('pdf') ? `<iframe src="${res.fileData}" class="preview"></iframe>` : ''}
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    renderResources();
+  </script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📘 Smart Academic Calendar Creator</title>
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0; padding: 0;
+    background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+    color: #333;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  body.dark {
+    background: linear-gradient(to right, #1f1f1f, #121212);
+    color: #f4f4f4;
+  }
+
+  .container {
+    max-width: 1200px; margin: auto; padding: 30px;
+    background: #ffffffd1;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+
+  body.dark .container {
+    background: #1e1e1ee0;
+    box-shadow: 0 20px 30px rgba(0,0,0,0.4);
+  }
+
+  h1 {
+    font-size: 2rem;
+    color: #2e86de;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    text-align: center;
+    margin-top: 20px;
+    color: #555;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+    justify-content: center;
+  }
+
+  input, select, button {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: #2e86de;
+    box-shadow: 0 0 5px rgba(46, 134, 222, 0.4);
+  }
+
+  button {
+    background: linear-gradient(to right, #2e86de, #4a69bd);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease, background 0.3s;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #1e3799, #4a69bd);
+  }
+
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+
+  .day-name, .day {
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    transition: background 0.3s;
+  }
+
+  .day-name {
+    background: #2c3e50;
+    color: white;
+    font-weight: bold;
+  }
+
+  .day {
+    background: #ffffff;
+    cursor: pointer;
+    min-height: 80px;
+    border: 1px solid #ddd;
+  }
+
+  .day:hover {
+    background: #e8f0fe;
+  }
+
+  .dark .day-name {
+    background: #333;
+  }
+
+  .dark .day {
+    background: #292929;
+    border-color: #444;
+  }
+
+  .dark .day:hover {
+    background: #3a3a3a;
+  }
+
+  .today {
+    border: 2px solid #2e86de;
+    box-shadow: 0 0 8px #2e86de99;
+  }
+
+  .highlight {
+    background: #ffeb3b;
+    font-weight: bold;
+    box-shadow: 0 0 6px #ffd600;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: left;
+  }
+
+  th {
+    background: #2c3e50;
+    color: white;
+  }
+
+  tr:hover td {
+    background: #f2f2f2;
+  }
+
+  .dark tr:hover td {
+    background: #333;
+  }
+
+  .dashboard {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .dashboard .box {
+    flex: 1;
+    padding: 15px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #ffffff, #e3f2fd);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+    text-align: center;
+    font-weight: 600;
+    color: #2e86de;
+    min-width: 160px;
+  }
+
+  .dark .box {
+    background: linear-gradient(to bottom, #2c2c2c, #1e1e1e);
+    color: #90caf9;
+  }
+
+  .toggle-dark {
+    cursor: pointer;
+    color: #2e86de;
+    text-align: right;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    width: 300px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
+  }
+
+  .dark .modal-content {
+    background: #2c2c2c;
+    color: #fff;
+  }
+
+  .modal input, .modal select {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  .modal button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+
+</head>
+<body>
+  <div class="container">
+    <div class="toggle-dark" onclick="toggleDarkMode()">🌃 Toggle Dark Mode</div>
+    <h1>🗓️ Academic Calendar Creator</h1>
+
+    <div class="top-bar">
+      <div>
+        <button onclick="switchView('calendar')">📆 Calendar View</button>
+        <button onclick="switchView('table')">📋 Table View</button>
+      </div>
+      <div>
+        <select id="monthSelector" onchange="renderCalendar()"></select>
+        <select id="yearSelector" onchange="renderCalendar()"></select>
+        <button onclick="goToday()">📍 Today</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="text" id="month" placeholder="Month">
+      <input type="date" id="date">
+      <input type="text" id="event" placeholder="Event Title">
+      <select id="type">
+        <option value="Holiday">Holiday</option>
+        <option value="Event">Event</option>
+        <option value="Exam">Exam</option>
+        <option value="Activity">Activity</option>
+        <option value="Important">Important</option>
+      </select>
+      <button onclick="addEvent()">Add</button>
+    </div>
+
+    <div class="dashboard" id="dashboardSummary"></div>
+
+    <div class="calendar-view active-view" id="calendarView">
+      <h3 id="currentMonthLabel">Calendar</h3>
+      <div class="calendar" id="calendarGrid"></div>
+    </div>
+
+    <div class="table-view" id="tableView">
+      <h3>Event Table View</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th><th>Date</th><th>Event</th><th>Type</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="eventTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal" id="eventModal">
+    <div class="modal-content">
+      <h4 id="modalDate"></h4>
+      <input type="text" id="modalEvent" placeholder="Event Title" />
+      <select id="modalType">
+        <option value="Holiday">Holiday</option>
+        <option value="Event">Event</option>
+        <option value="Exam">Exam</option>
+        <option value="Activity">Activity</option>
+        <option value="Important">Important</option>
+      </select>
+      <button onclick="saveModalEvent()">Save</button>
+    </div>
+  </div>
+
+  <script>
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    let selectedDate = '';
+
+    function saveEvents() {
+      localStorage.setItem('events', JSON.stringify(events));
+    }
+
+    function renderDashboard() {
+      const dashboard = document.getElementById('dashboardSummary');
+      const types = ['Holiday', 'Event', 'Exam', 'Activity', 'Important'];
+      dashboard.innerHTML = types.map(type => {
+        const count = events.filter(e => e.type === type).length;
+        return `<div class="box">${type}: <strong>${count}</strong></div>`;
+      }).join('');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('eventTableBody');
+      tbody.innerHTML = '';
+      events.forEach((e, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${e.month}</td>
+          <td>${e.date}</td>
+          <td>${e.event}</td>
+          <td>${e.type}</td>
+          <td><button onclick="deleteEvent(${i})">❌</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderCalendar() {
+      const calendar = document.getElementById('calendarGrid');
+      const month = parseInt(document.getElementById('monthSelector').value);
+      const year = parseInt(document.getElementById('yearSelector').value);
+      calendar.innerHTML = '';
+
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      dayNames.forEach(d => {
+        const div = document.createElement('div');
+        div.className = 'day-name';
+        div.textContent = d;
+        calendar.appendChild(div);
+      });
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date().toISOString().split('T')[0];
+      const monthName = new Date(year, month).toLocaleString('default', { month: 'long' });
+      document.getElementById('currentMonthLabel').textContent = `${monthName} ${year}`;
+
+      for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement('div');
+        calendar.appendChild(empty);
+      }
+
+      for (let i = 1; i <= daysInMonth; i++) {
+        const dateStr = `${year}-${(month+1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        const e = events.find(ev => ev.date === dateStr);
+        const div = document.createElement('div');
+        div.className = `day ${dateStr === today ? 'today' : ''} ${e ? 'highlight' : ''}`;
+        div.innerHTML = `${i}<br>${e ? e.event : ''}`;
+        div.onclick = () => openModal(dateStr);
+        calendar.appendChild(div);
+      }
+    }
+
+    function addEvent() {
+      const month = document.getElementById('month').value.trim();
+      const date = document.getElementById('date').value;
+      const event = document.getElementById('event').value.trim();
+      const type = document.getElementById('type').value;
+      if (!month || !date || !event) return alert('Fill all fields!');
+      events.push({ month, date, event, type });
+      saveEvents(); renderAll();
+    }
+
+    function deleteEvent(i) {
+      events.splice(i, 1);
+      saveEvents(); renderAll();
+    }
+
+    function switchView(view) {
+      document.getElementById('calendarView').classList.remove('active-view');
+      document.getElementById('tableView').classList.remove('active-view');
+      document.getElementById(view + 'View').classList.add('active-view');
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+
+    function openModal(date) {
+      selectedDate = date;
+      const existing = events.find(ev => ev.date === date);
+      document.getElementById('modalDate').textContent = `🗓️ ${date}`;
+      document.getElementById('modalEvent').value = existing ? existing.event : '';
+      document.getElementById('modalType').value = existing ? existing.type : 'Event';
+      document.getElementById('eventModal').style.display = 'flex';
+    }
+
+    function saveModalEvent() {
+      const title = document.getElementById('modalEvent').value.trim();
+      const type = document.getElementById('modalType').value;
+      if (!title) return alert('Enter event title');
+      const monthName = new Date(selectedDate).toLocaleString('default', { month: 'long' });
+      const index = events.findIndex(e => e.date === selectedDate);
+      if (index >= 0) {
+        events[index] = { month: monthName, date: selectedDate, event: title, type };
+      } else {
+        events.push({ month: monthName, date: selectedDate, event: title, type });
+      }
+      saveEvents(); renderAll();
+      document.getElementById('eventModal').style.display = 'none';
+    }
+
+    window.onclick = function(e) {
+      if (e.target.id === 'eventModal') {
+        document.getElementById('eventModal').style.display = 'none';
+      }
+    }
+
+    function goToday() {
+      const now = new Date();
+      document.getElementById('monthSelector').value = now.getMonth();
+      document.getElementById('yearSelector').value = now.getFullYear();
+      renderCalendar();
+    }
+
+    function renderAll() {
+      renderDashboard(); renderCalendar(); renderTable();
+    }
+
+    function populateMonthYearSelectors() {
+      const monthSel = document.getElementById('monthSelector');
+      const yearSel = document.getElementById('yearSelector');
+      for (let i = 0; i < 12; i++) {
+        const monthName = new Date(2000, i).toLocaleString('default', { month: 'long' });
+        monthSel.innerHTML += `<option value="${i}">${monthName}</option>`;
+      }
+      for (let y = 2020; y <= 2035; y++) {
+        yearSel.innerHTML += `<option value="${y}">${y}</option>`;
+      }
+      const today = new Date();
+      monthSel.value = today.getMonth();
+      yearSel.value = today.getFullYear();
+    }
+
+    populateMonthYearSelectors();
+    renderAll();
+  </script>
+</body>
+</html>

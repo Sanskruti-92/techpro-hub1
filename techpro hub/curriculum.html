@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📘 Curriculum Manager Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --light: #f9fafb;
+      --white: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #e2e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: var(--light);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      color: var(--white);
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+      border-radius: 0 0 32px 32px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 3rem auto;
+      background: var(--white);
+      padding: 2rem 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      border-left: 5px solid var(--primary);
+      padding-left: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--light);
+      font-size: 1rem;
+      transition: border 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      outline: none;
+      background: var(--white);
+    }
+
+    button {
+      background: var(--primary);
+      color: var(--white);
+      font-weight: 600;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      padding: 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: var(--light);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .planned {
+      background: var(--success);
+      color: white;
+    }
+
+    .progress {
+      background: var(--warning);
+      color: white;
+    }
+
+    .completed {
+      background: var(--danger);
+      color: white;
+    }
+
+    .delete-btn {
+      background: var(--danger);
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background: #b91c1c;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        font-size: 2rem;
+        padding: 1.5rem 1rem;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    📘 Curriculum Manager Pro
+  </header>
+
+  <div class="container">
+    <h2>➕ Add New Curriculum</h2>
+    <div class="grid">
+      <input id="grade" placeholder="Grade (e.g., 6)" />
+      <input id="subject" placeholder="Subject (e.g., Math)" />
+      <input id="topic" placeholder="Topic (e.g., Fractions)" />
+      <textarea id="resources" placeholder="Resources (URL or notes)"></textarea>
+      <input id="teacher" placeholder="Assigned Teacher" />
+      <select id="status">
+        <option value="planned">Planned</option>
+        <option value="progress">In Progress</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+    <button onclick="addCurriculum()">➕ Add Curriculum</button>
+
+    <h2>📋 Curriculum Overview</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Grade</th>
+          <th>Subject</th>
+          <th>Topic</th>
+          <th>Resources</th>
+          <th>Teacher</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="curriculumTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function addCurriculum() {
+      const grade = document.getElementById('grade').value.trim();
+      const subject = document.getElementById('subject').value.trim();
+      const topic = document.getElementById('topic').value.trim();
+      const resources = document.getElementById('resources').value.trim();
+      const teacher = document.getElementById('teacher').value.trim();
+      const status = document.getElementById('status').value;
+
+      if (!grade || !subject || !topic || !teacher || !resources) {
+        alert("Please fill out all fields.");
+        return;
+      }
+
+      const table = document.getElementById('curriculumTable');
+      const row = document.createElement('tr');
+
+      const statusClass = {
+        planned: 'planned',
+        progress: 'progress',
+        completed: 'completed'
+      }[status];
+
+      row.innerHTML = `
+        <td>${grade}</td>
+        <td>${subject}</td>
+        <td>${topic}</td>
+        <td><a href="${resources}" target="_blank">🔗 View</a></td>
+        <td>${teacher}</td>
+        <td><span class="tag ${statusClass}">${status}</span></td>
+        <td><button class="delete-btn" onclick="deleteRow(this)">🗑 Delete</button></td>
+      `;
+
+      table.appendChild(row);
+
+      ['grade', 'subject', 'topic', 'resources', 'teacher'].forEach(id => document.getElementById(id).value = "");
+      document.getElementById('status').value = "planned";
+    }
+
+    function deleteRow(btn) {
+      if (confirm("Are you sure you want to delete this curriculum entry?")) {
+        btn.closest("tr").remove();
+      }
+    }
+  </script>
+</body>
+</html>

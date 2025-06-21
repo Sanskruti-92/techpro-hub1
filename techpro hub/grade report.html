@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📊 Grade Calculator & Report Card Maker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eef3f8;
+      color: #333;
+    }
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      position: absolute;
+      top: 15px;
+      left: 20px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+    header h2 {
+      margin: 5px 0 0;
+      font-size: 16px;
+      font-weight: normal;
+    }
+    main {
+      padding: 25px;
+      max-width: 900px;
+      margin: auto;
+    }
+    form {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    input {
+      padding: 10px;
+      width: 100%;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 12px 25px;
+      background: #0055a5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #004080;
+    }
+    h3 {
+      color: #004080;
+      margin-top: 30px;
+    }
+    .report-card {
+      background: #fff;
+      padding: 25px;
+      margin-top: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 14px rgba(0,0,0,0.07);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #e6f0ff;
+    }
+    .scale, .attendance, .comments {
+      margin-top: 25px;
+      background: #f8faff;
+      padding: 12px 15px;
+      border-left: 5px solid #003366;
+      border-radius: 4px;
+    }
+    .signature-area {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+    .signature-box {
+      text-align: center;
+      flex: 1;
+      padding-top: 40px;
+      
+      font-size: 14px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.9em;
+      margin-top: 30px;
+      padding-top: 10px;
+      color: #555;
+      border-top: 1px solid #ccc;
+    }
+    .school-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .school-header img {
+      height: 60px;
+    }
+    .print-btn {
+      display: none;
+      margin: 20px auto 0;
+      text-align: center;
+    }
+    .print-btn button {
+      background: #28a745;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .report-card, .report-card * {
+        visibility: visible;
+      }
+      .report-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+      .print-btn {
+        display: none !important;
+      }
+
+      header {
+  background-color: #003366;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+header h2 {
+  margin: 5px 0 0;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+    }
+  </style>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <img src="logo.jpg" alt="School Logo" class="logo" />
+    <div class="school-title">
+      <h1>Green Valley International School</h1>
+      <h2>📊 Grade Calculator & Report Card Maker</h2>
+    </div>
+  </div>
+</header>
+
+
+  <main>
+    <form id="gradeForm">
+      <label>Student Name: <input type="text" id="name" required></label>
+      <label>Grade: <input type="text" id="grade" required></label>
+      <label>School Year: <input type="date" id="year" required></label>
+
+      <h3>📘 Subject Grades</h3>
+      <label>English (1st Sem): <input type="text" id="english1"></label>
+      <label>English (2nd Sem): <input type="text" id="english2"></label>
+      <label>Math (1st Sem): <input type="text" id="math1"></label>
+      <label>Math (2nd Sem): <input type="text" id="math2"></label>
+      <label>Science (1st Sem): <input type="text" id="science1"></label>
+      <label>Science (2nd Sem): <input type="text" id="science2"></label>
+      <label>History (1st Sem): <input type="text" id="history1"></label>
+      <label>History (2nd Sem): <input type="text" id="history2"></label>
+      <label>Foreign Language (1st Sem): <input type="text" id="flang1"></label>
+      <label>Foreign Language (2nd Sem): <input type="text" id="flang2"></label>
+      <label>Physical Education (1st Sem): <input type="text" id="pe1"></label>
+      <label>Physical Education (2nd Sem): <input type="text" id="pe2"></label>
+      <label>Elective (1st Sem): <input type="text" id="elective1"></label>
+      <label>Elective (2nd Sem): <input type="text" id="elective2"></label>
+
+      <h3>📅 Attendance</h3>
+      <label>Days Present: <input type="number" id="present" value="170"></label>
+      <label>Days Absent: <input type="number" id="absent" value="10"></label>
+      <label>Tardies: <input type="number" id="tardy" value="3"></label>
+
+      <button type="submit">Generate Report Card</button>
+    </form>
+
+    <div id="reportCard" class="report-card" style="display:none;"></div>
+    <div class="print-btn" id="printButton" style="display:none;">
+      <button onclick="window.print()">🖨️ Print Report Card</button>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("gradeForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const getVal = id => document.getElementById(id).value || "-";
+      const avg = (g1, g2) => g1 && g2 ? Math.round((parseFloat(g1) + parseFloat(g2)) / 2) : (g1 || g2 || "-");
+
+      const html = `
+        <div class="school-header">
+          <img src="logo.jpg" alt="School Logo" />
+          <h2>Green Valley International School</h2>
+        </div>
+
+        <h2>🎓 Student Report Card</h2>
+        <p><strong>Name:</strong> ${getVal("name")} &nbsp;&nbsp; <strong>Grade:</strong> ${getVal("grade")} &nbsp;&nbsp; <strong>Year:</strong> ${getVal("year")}</p>
+
+        <table>
+          <tr><th>Subject</th><th>1st Semester</th><th>2nd Semester</th><th>Final Grade</th></tr>
+          <tr><td>English</td><td>${getVal("english1")}</td><td>${getVal("english2")}</td><td>${avg(getVal("english1"), getVal("english2"))}</td></tr>
+          <tr><td>Mathematics</td><td>${getVal("math1")}</td><td>${getVal("math2")}</td><td>${avg(getVal("math1"), getVal("math2"))}</td></tr>
+          <tr><td>Science</td><td>${getVal("science1")}</td><td>${getVal("science2")}</td><td>${avg(getVal("science1"), getVal("science2"))}</td></tr>
+          <tr><td>History</td><td>${getVal("history1")}</td><td>${getVal("history2")}</td><td>${avg(getVal("history1"), getVal("history2"))}</td></tr>
+          <tr><td>Foreign Language</td><td>${getVal("flang1")}</td><td>${getVal("flang2")}</td><td>${avg(getVal("flang1"), getVal("flang2"))}</td></tr>
+          <tr><td>Physical Education</td><td>${getVal("pe1")}</td><td>${getVal("pe2")}</td><td>${avg(getVal("pe1"), getVal("pe2"))}</td></tr>
+          <tr><td>Elective</td><td>${getVal("elective1")}</td><td>${getVal("elective2")}</td><td>${avg(getVal("elective1"), getVal("elective2"))}</td></tr>
+        </table>
+
+        <div class="scale"><strong>Grading Scale:</strong><br>
+          A: 90–100%<br>B: 80–89%<br>C: 70–79%<br>D: 60–69%<br>F: Below 60%
+        </div>
+
+        <div class="attendance"><strong>Attendance:</strong><br>
+          Days Present: ${getVal("present")}<br>
+          Days Absent: ${getVal("absent")}<br>
+          Tardies: ${getVal("tardy")}
+        </div>
+
+        <div class="comments">
+          <strong>Comments:</strong><br>
+          ${getVal("name")} has demonstrated good progress. Continued effort and focus in upcoming semesters are encouraged.
+        </div>
+
+        <div class="signature-area">
+  <div class="signature-box">
+    <img src="signature.png" alt="Parent Signature" style="max-height:60px;"><br>
+    Parent's Signature
+  </div>
+  <div class="signature-box">
+    <img src="signature.png" alt="Teacher Signature" style="max-height:60px;"><br>
+    Teacher's Signature
+  </div>
+  <div class="signature-box">
+    <img src="signature.png" alt="Principal Signature" style="max-height:60px;"><br>
+    Principal's Signature
+  </div>
+</div>
+
+
+        <div class="footer">
+          🏫 Green Valley International School, 123 Knowledge Road, EduCity | ☎️ +1-800-555-1234 | ✉️ info@gvis.edu
+        </div>
+      `;
+
+      document.getElementById("reportCard").style.display = "block";
+      document.getElementById("reportCard").innerHTML = html;
+      document.getElementById("printButton").style.display = "block";
+    });
+  </script>
+</body>
+</html>

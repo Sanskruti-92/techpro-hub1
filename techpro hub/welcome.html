@@ -1,0 +1,485 @@
+<!-- FULL HTML CODE WITH BIGGER EDUCATOR IMAGE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeachPro Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(120deg, #4eaaff, #003b8b);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      width: 100%;
+      padding: 20px 10%;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h2 {
+      font-size: 1.8rem;
+      color: #fff;
+    }
+
+    header nav a {
+      margin-left: 20px;
+      color: #ffd700;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    header nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 100vh;
+      padding: 120px 10% 60px;
+      gap: 60px;
+      flex-wrap: wrap;
+      background: linear-gradient(120deg, #4eaaff, #003b8b);
+    }
+
+    .left-panel {
+      flex: 1;
+      max-width: 550px;
+    }
+
+    .left-panel h1 {
+      font-size: 3rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .greeting-block {
+      margin-top: 10px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border-left: 5px solid #ffd700;
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    #greetingTime {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .thought {
+      font-style: italic;
+      font-size: 1rem;
+      color: #f7e9c4;
+    }
+
+    .welcome-msg {
+      font-size: 1rem;
+      line-height: 1.7;
+      margin: 25px 0;
+      color: #eee;
+    }
+
+    .welcome-msg h2 {
+      font-size: 1.5rem;
+      color: #ffd700;
+    }
+
+    .welcome-msg ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-top: 15px;
+    }
+
+    .welcome-msg li::before {
+      content: "✨ ";
+      color: #ffd700;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    .buttons button {
+      padding: 12px 30px;
+      margin: 10px 10px 0 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #ffd700;
+      color: #1f1c2c;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      transition: transform 0.2s ease-in-out, background 0.3s;
+    }
+
+    .buttons button:hover {
+      transform: scale(1.05);
+      background: #ffc400;
+    }
+
+    .right-panel {
+      flex: 1.5;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 850px; /* more height to fit bigger image */
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .flower {
+      position: absolute;
+      background: pink;
+      border-radius: 50% 50% 0 50%;
+      transform: rotate(45deg);
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .flower1 { width: 160px; height: 160px; top: 20px; left: 30px; }
+    .flower2 { width: 140px; height: 140px; top: 120px; right: 100px; }
+    .flower3 { width: 120px; height: 120px; top: 280px; right: 20px; }
+    .flower4 { width: 130px; height: 130px; bottom: 90px; left: 180px; }
+    .flower5 { width: 150px; height: 150px; top: 400px; left: 50px; }
+    .flower6 { width: 130px; height: 130px; bottom: 140px; right: 180px; }
+
+    .right-panel img {
+      width: 800px;
+      max-width: 100%;
+      height: auto;
+      z-index: 1;
+      animation: float 6s ease-in-out infinite;
+      border-radius: 25px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .feature-section, .vision-section {
+      background: #f8f9fa;
+      color: #222;
+      padding: 60px 10%;
+      text-align: center;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .contact-section {
+      background: #fff;
+      color: #222;
+      padding: 60px 10%;
+      text-align: center;
+    }
+
+    .contact-form {
+      max-width: 600px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .contact-form input, .contact-form textarea {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .contact-form button {
+      background: #003b8b;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px 10%;
+      background: rgba(0,0,0,0.3);
+      color: #eee;
+    }
+
+    #backToTop {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ffd700;
+      color: #003b8b;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+      color: #003b8b;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .modal-content button {
+      background: #003b8b;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+
+    .modal-content button:hover {
+      background: #002060;
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      font-size: 28px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>TeachPro Hub</h2>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#features">Features</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="left-panel">
+      <h1>Welcome Educator!</h1>
+
+      <div class="greeting-block">
+        <h2 id="greetingTime">Good Morning 🌞</h2>
+        <p class="thought" id="thoughtDisplay">“Education is the passport to the future.”</p>
+      </div>
+
+      <div class="welcome-msg">
+        <h2>🎒 Teacher’s Ultimate Toolkit</h2>
+        <ul>
+          <li>All-in-one platform for smart lesson planning and student engagement.</li>
+          <li>Simplify your workflow, amplify your teaching impact.</li>
+          <li>Teach, inspire, and lead with confidence in a digital world.</li>
+        </ul>
+      </div>
+
+      <div class="buttons">
+        <button onclick="openModal('login')">Login</button>
+        <button onclick="openModal('signup')">Create Account</button>
+      </div>
+
+      <div class="modal" id="loginModal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal('login')">&times;</span>
+          <h2>Login</h2>
+          <input type="text" id="loginUsername" placeholder="Username">
+          <input type="password" id="loginPassword" placeholder="Password">
+          <button onclick="submitLogin()">Login</button>
+        </div>
+      </div>
+
+      <div class="modal" id="signupModal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal('signup')">&times;</span>
+          <h2>Create Account</h2>
+          <input type="text" id="signupUsername" placeholder="New Username">
+          <input type="password" id="signupPassword" placeholder="New Password">
+          <button onclick="submitSignup()">Create Account</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="flower flower1"></div>
+      <div class="flower flower2"></div>
+      <div class="flower flower3"></div>
+      <div class="flower flower4"></div>
+      <div class="flower flower5"></div>
+      <div class="flower flower6"></div>
+      <img src="istockphoto-1358014313-612x612-removebg-preview.png" alt="Educator" />
+    </div>
+  </div>
+
+  <section id="features" class="feature-section">
+    <h2>Why Choose TeachPro Hub?</h2>
+    <p>Your all-in-one toolkit for modern educators</p>
+    <div class="features-grid">
+      <div class="feature-card"><h3>📘 AI Lesson Planner</h3><p>Create engaging lessons quickly using AI.</p></div>
+      <div class="feature-card"><h3>📊 Student Progress Tracker</h3><p>Track progress, attendance & more.</p></div>
+      <div class="feature-card"><h3>🚰️ Interactive Teaching Tools</h3><p>Live polls, quizzes, boards, and games.</p></div>
+      <div class="feature-card"><h3>🤝 Educator Collaboration</h3><p>Connect with teachers & share ideas.</p></div>
+      <div class="feature-card"><h3>☁️ Secure Cloud Access</h3><p>Access materials securely anywhere.</p></div>
+    </div>
+  </section>
+
+  <section class="vision-section">
+    <h2>Our Vision</h2>
+    <p>Empowering educators with smart, simple, and human-first technology to inspire the next generation.</p>
+  </section>
+
+  <section id="contact" class="contact-section">
+    <h2>Contact Us</h2>
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" required />
+      <input type="email" placeholder="Your Email" required />
+      <textarea placeholder="Your Message" rows="5" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2025 TeachPro Hub. All rights reserved. | Designed with ❤️</p>
+  </footer>
+
+  <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
+
+  <script>
+    const thoughts = [
+      "Education is the passport to the future.",
+      "Teaching is the one profession that creates all others.",
+      "A good teacher can inspire hope, ignite imagination, and instill a love of learning.",
+      "The best teachers teach from the heart, not from the book.",
+      "Every child deserves a champion.",
+      "Learning never exhausts the mind.",
+      "An investment in knowledge pays the best interest.",
+      "No one can take learning away from you.",
+      "Educators are the architects of society.",
+      "Technology is just a tool. Teachers are the real magic."
+    ];
+
+    function updateGreetingAndThought() {
+      const now = new Date();
+      const hour = now.getHours();
+      let greet = hour < 12 ? "Good Morning 🌞" : hour < 18 ? "Good Afternoon ☀️" : "Good Evening 🌙";
+      document.getElementById("greetingTime").textContent = greet;
+      document.getElementById("thoughtDisplay").textContent = "“" + thoughts[Math.floor(Math.random() * thoughts.length)] + "”";
+    }
+
+    function openModal(type) {
+      document.getElementById(type + "Modal").style.display = "flex";
+    }
+
+    function closeModal(type) {
+      document.getElementById(type + "Modal").style.display = "none";
+    }
+
+    function submitLogin() {
+      const user = document.getElementById("loginUsername").value;
+      const pass = document.getElementById("loginPassword").value;
+      if (user && pass) {
+        window.location.href = "index.html";
+      } else {
+        alert("Please enter both username and password.");
+      }
+    }
+
+    function submitSignup() {
+      const user = document.getElementById("signupUsername").value;
+      const pass = document.getElementById("signupPassword").value;
+      if (user && pass) {
+        window.location.href = "index.html";
+      } else {
+        alert("Please fill in all details.");
+      }
+    }
+
+    updateGreetingAndThought();
+    setInterval(updateGreetingAndThought, 120000);
+  </script>
+</body>
+</html>

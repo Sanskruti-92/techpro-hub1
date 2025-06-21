@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🏆 Pro Recognition Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-100 text-gray-800 min-h-screen">
+  <div class="max-w-7xl mx-auto p-6">
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-4xl font-extrabold">🏆 Pro Recognition Tracker</h1>
+        <p id="quote" class="text-sm text-gray-600 mt-1 italic"></p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <input id="search" type="text" placeholder="Search name..." class="p-2 border rounded" oninput="filterTable()"/>
+        <select id="filterCategory" onchange="filterTable()" class="p-2 border rounded">
+          <option value="">All Categories</option>
+          <option value="Creativity">Creativity</option>
+          <option value="Leadership">Leadership</option>
+          <option value="Discipline">Discipline</option>
+          <option value="Academic">Academic</option>
+        </select>
+        <button onclick="toggleTheme()" class="text-xl">🌗</button>
+        <button onclick="openModal()" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-xl shadow hover:opacity-90">+ Add</button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="glass p-4 rounded-xl text-center shadow">
+        <h3 class="font-semibold">Total Recognitions</h3>
+        <p id="totalRecognitions" class="text-3xl font-bold text-blue-600">0</p>
+      </div>
+      <div class="glass p-4 rounded-xl text-center shadow">
+        <h3 class="font-semibold">Top Performer</h3>
+        <p id="topPerformer" class="text-xl font-bold text-purple-700">-</p>
+      </div>
+      <div class="glass p-4 rounded-xl text-center shadow">
+        <h3 class="font-semibold">Average Points</h3>
+        <p id="averagePoints" class="text-xl font-bold text-green-600">0</p>
+      </div>
+      <div class="glass p-4 rounded-xl text-center shadow">
+        <h3 class="font-semibold">Last Updated</h3>
+        <p id="lastUpdated" class="text-sm text-gray-500">--</p>
+      </div>
+    </section>
+
+    <!-- Top 3 Performers -->
+    <section class="bg-white p-4 rounded-xl shadow mb-4">
+      <h2 class="text-lg font-semibold mb-2">🏅 Top 3 Performers</h2>
+      <ul id="top3" class="list-disc list-inside text-sm text-gray-800"></ul>
+    </section>
+
+    <!-- Chart -->
+    <section class="bg-white shadow rounded-xl p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">📈 Weekly Trend</h2>
+      <canvas id="chart"></canvas>
+    </section>
+
+    <!-- Recognition Log -->
+    <section class="bg-white shadow rounded-xl p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">📅 Recognition Log</h2>
+        <div class="flex gap-2">
+          <button onclick="downloadCSV()" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm">Download CSV</button>
+          <button onclick="clearAll()" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">Clear All</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-gray-100 uppercase">
+            <tr>
+              <th class="py-2 px-4">Name</th>
+              <th class="py-2 px-4">Reason</th>
+              <th class="py-2 px-4">Points</th>
+              <th class="py-2 px-4">Category</th>
+              <th class="py-2 px-4">Date</th>
+            </tr>
+          </thead>
+          <tbody id="recognitionTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md relative shadow-xl">
+      <h3 class="text-xl font-bold mb-4">Add New Recognition</h3>
+      <input id="name" type="text" placeholder="Name" class="w-full mb-3 p-2 border rounded" />
+      <input id="reason" type="text" placeholder="Reason" class="w-full mb-3 p-2 border rounded" />
+      <input id="points" type="number" placeholder="Points" class="w-full mb-3 p-2 border rounded" />
+      <select id="category" class="w-full mb-3 p-2 border rounded">
+        <option value="Creativity">Creativity</option>
+        <option value="Leadership">Leadership</option>
+        <option value="Discipline">Discipline</option>
+        <option value="Academic">Academic</option>
+      </select>
+      <button onclick="addRecognition()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Add</button>
+      <button onclick="closeModal()" class="absolute top-2 right-3 text-gray-500">✕</button>
+    </div>
+  </div>
+
+  <script>
+    let recognitions = JSON.parse(localStorage.getItem('recognitions')) || [];
+    let leaderboard = {};
+
+    const quotes = [
+      "Recognition is the greatest motivator.",
+      "People work for money but go the extra mile for recognition.",
+      "Appreciation can change a day, even change a life."
+    ];
+    document.getElementById('quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+    function openModal() { document.getElementById('modal').classList.remove('hidden'); }
+    function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+    function addRecognition() {
+      const name = document.getElementById('name').value;
+      const reason = document.getElementById('reason').value;
+      const points = +document.getElementById('points').value;
+      const category = document.getElementById('category').value;
+      const date = new Date().toLocaleDateString();
+      if (!name || !reason || !points) return alert("Fill all fields");
+
+      recognitions.unshift({ name, reason, points, category, date });
+      localStorage.setItem('recognitions', JSON.stringify(recognitions));
+      document.getElementById('name').value = '';
+      document.getElementById('reason').value = '';
+      document.getElementById('points').value = '';
+
+      updateAll();
+      closeModal();
+    }
+
+    function updateAll() {
+      updateTable();
+      updateStats();
+      updateChart();
+      updateTop3();
+      document.getElementById('lastUpdated').innerText = new Date().toLocaleString();
+    }
+
+    function updateTable() {
+      const table = document.getElementById('recognitionTable');
+      table.innerHTML = '';
+      recognitions.forEach(r => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="py-2 px-4 font-semibold">${r.name}</td>
+          <td class="py-2 px-4">${r.reason}</td>
+          <td class="py-2 px-4 text-blue-600 font-bold">+${r.points}</td>
+          <td class="py-2 px-4">${r.category}</td>
+          <td class="py-2 px-4 text-sm text-gray-500">${r.date}</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function updateStats() {
+  document.getElementById('totalRecognitions').innerText = recognitions.length;
+  leaderboard = {};
+
+  recognitions.forEach(r => {
+    const points = isNaN(r.points) ? 0 : r.points;
+    leaderboard[r.name] = (leaderboard[r.name] || 0) + points;
+  });
+
+  const top = Object.entries(leaderboard).sort((a, b) => b[1] - a[1])[0];
+
+  if (top && !isNaN(top[1]) && top[1] > 0) {
+    document.getElementById('topPerformer').innerText = `${top[0]} (${top[1]} pts)`;
+  } else {
+    document.getElementById('topPerformer').innerText = '-';
+  }
+
+  const validPoints = recognitions
+    .map(r => r.points)
+    .filter(p => !isNaN(p));
+
+  const total = validPoints.reduce((acc, p) => acc + p, 0);
+  const avg = validPoints.length ? (total / validPoints.length).toFixed(1) : 0;
+
+  document.getElementById('averagePoints').innerText = avg;
+}
+
+
+    function updateTop3() {
+      const topList = Object.entries(leaderboard).sort((a,b)=>b[1]-a[1]).slice(0,3);
+      const top3 = document.getElementById('top3');
+      top3.innerHTML = topList.map(([name, pts]) => `<li>${name} - ${pts} pts</li>`).join('');
+    }
+
+    const chartCtx = document.getElementById('chart').getContext('2d');
+    const chart = new Chart(chartCtx, {
+      type: 'line',
+      data: {
+        labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+        datasets: [{
+          label: 'Points per Day',
+          data: [0, 0, 0, 0, 0, 0, 0],
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.2)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true, position: 'top' } }
+      }
+    });
+
+    function updateChart() {
+      const data = [0, 0, 0, 0, 0, 0, 0];
+      recognitions.forEach(r => {
+        const d = new Date(r.date);
+        const idx = d.getDay() === 0 ? 6 : d.getDay() - 1;
+        data[idx] += r.points;
+      });
+      chart.data.datasets[0].data = data;
+      chart.update();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('bg-gray-900');
+      document.body.classList.toggle('text-white');
+    }
+
+    function downloadCSV() {
+      const csv = ['Name,Reason,Points,Category,Date'];
+      recognitions.forEach(r => csv.push(`${r.name},${r.reason},${r.points},${r.category},${r.date}`));
+      const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'recognitions.csv';
+      a.click();
+    }
+
+    function clearAll() {
+      if (confirm('Are you sure you want to delete all recognitions?')) {
+        recognitions = [];
+        localStorage.removeItem('recognitions');
+        updateAll();
+      }
+    }
+
+    function filterTable() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const category = document.getElementById('filterCategory').value;
+      const filtered = recognitions.filter(r =>
+        (!search || r.name.toLowerCase().includes(search)) &&
+        (!category || r.category === category)
+      );
+      const table = document.getElementById('recognitionTable');
+      table.innerHTML = '';
+      filtered.forEach(r => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="py-2 px-4 font-semibold">${r.name}</td>
+          <td class="py-2 px-4">${r.reason}</td>
+          <td class="py-2 px-4 text-blue-600 font-bold">+${r.points}</td>
+          <td class="py-2 px-4">${r.category}</td>
+          <td class="py-2 px-4 text-sm text-gray-500">${r.date}</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    updateAll();
+  </script>
+</body>
+</html>

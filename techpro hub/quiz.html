@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🧠 Quiz Creator Pro with Doll</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #fceabb, #f8b500);
+      --text: #333;
+      --card: rgba(255, 255, 255, 0.95);
+      --primary: #ff9800;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 10px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 30px 20px 50px;
+      width: 100%;
+      max-width: 1300px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      padding: 40px;
+      width: 100%;
+      max-width: 750px;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      font-size: 1.7rem;
+      color: var(--primary);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 14px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      padding: 14px 20px;
+      margin-top: 10px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      filter: brightness(0.9);
+      transform: translateY(-2px);
+    }
+
+    .quiz-area {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .doll-side {
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .doll-side img {
+      width: 100%;
+      max-width: 220px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    .bubble {
+      background: var(--card);
+      padding: 24px;
+      border-radius: 18px;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 1.2rem;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    }
+
+    .question-image {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .answers button {
+      display: block;
+      width: 100%;
+      margin-top: 15px;
+      padding: 18px;
+      font-size: 1.1rem;
+      background-color: #ffa726;
+      border-radius: 14px;
+    }
+
+    .correct { background-color: #4caf50 !important; }
+    .wrong { background-color: #e53935 !important; }
+
+    #progressBar {
+      width: 100%;
+      height: 10px;
+      background: #ccc;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    #progressFill {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: width 0.5s;
+    }
+
+    #readyPrompt {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    canvas#confetti {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    @media (max-width: 768px) {
+      .quiz-area {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🧠 Quiz Creator Pro</h1>
+  </header>
+
+  <div class="container">
+    <div class="card creator">
+      <h2>Create a New Question</h2>
+      <input id="qText" placeholder="Type your question" />
+      <input id="opt1" placeholder="Option 1" />
+      <input id="opt2" placeholder="Option 2" />
+      <input id="opt3" placeholder="Option 3" />
+      <input id="opt4" placeholder="Option 4" />
+      <input type="file" id="imageUpload" accept="image/*" />
+      <select id="correctAnswer">
+        <option value="">Select Correct Answer</option>
+        <option value="0">Option 1</option>
+        <option value="1">Option 2</option>
+        <option value="2">Option 3</option>
+        <option value="3">Option 4</option>
+      </select>
+      <button onclick="addQuestion()">➕ Add Question</button>
+      <button onclick="promptReady()">▶️ Start Quiz</button>
+      <button onclick="downloadQuiz()">⬇️ Export Quiz</button>
+    </div>
+
+    <div class="quiz-area" style="display:none">
+      <div class="doll-side">
+        <img src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png" alt="Doll" />
+      </div>
+      <div class="card quiz">
+        <div class="bubble" id="questionBox">Hello! Ready for the quiz?</div>
+        <div id="readyPrompt">
+          <button onclick="confirmReady()">✅ Yes</button>
+          <button onclick="cancelReady()">❌ No</button>
+        </div>
+        <img id="qImage" class="question-image" />
+        <div id="progressBar"><div id="progressFill"></div></div>
+        <div class="answers" id="answerButtons" style="margin-top: 20px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confetti"></canvas>
+
+<script>
+let quiz = [], current = 0, score = 0, voices = [], selectedVoice = null;
+
+function populateVoices() {
+  voices = speechSynthesis.getVoices();
+  if (voices.length && !selectedVoice) {
+    selectedVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+  }
+}
+populateVoices();
+window.speechSynthesis.onvoiceschanged = populateVoices;
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    const utter = new SpeechSynthesisUtterance(text);
+    if (selectedVoice) utter.voice = selectedVoice;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+  }
+}
+
+function addQuestion() {
+  const q = document.getElementById("qText").value;
+  const options = [opt1.value, opt2.value, opt3.value, opt4.value];
+  const correctIndex = correctAnswer.value;
+  const imageInput = document.getElementById("imageUpload");
+  let imgURL = "";
+
+  if (!q || options.includes("") || correctIndex === "") {
+    alert("Fill all fields and select correct answer.");
+    return;
+  }
+
+  if (imageInput.files[0]) {
+    imgURL = URL.createObjectURL(imageInput.files[0]);
+  }
+
+  quiz.push({ question: q, options, answer: options[correctIndex], image: imgURL });
+  qText.value = opt1.value = opt2.value = opt3.value = opt4.value = "";
+  correctAnswer.value = "";
+  imageInput.value = "";
+  alert("✅ Question added!");
+}
+
+function promptReady() {
+  if (quiz.length === 0) return alert("Add at least one question!");
+  document.querySelector(".creator").style.display = "none";
+  document.querySelector(".quiz-area").style.display = "flex";
+  speak("Hello! Ready for the quiz?");
+  document.getElementById("readyPrompt").style.display = "block";
+}
+
+function confirmReady() {
+  document.getElementById("readyPrompt").style.display = "none";
+  current = 0;
+  score = 0;
+  showQuestion();
+}
+
+function cancelReady() {
+  document.querySelector(".creator").style.display = "block";
+  document.querySelector(".quiz-area").style.display = "none";
+}
+
+function showQuestion() {
+  const q = quiz[current];
+  document.getElementById("questionBox").textContent = q.question;
+  speak(q.question);
+  const qImg = document.getElementById("qImage");
+  qImg.src = q.image || "";
+  qImg.style.display = q.image ? "block" : "none";
+  const aBtns = document.getElementById("answerButtons");
+  aBtns.innerHTML = '';
+  document.getElementById("progressFill").style.width = `${(current / quiz.length) * 100}%`;
+
+  q.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.textContent = option;
+    btn.onclick = () => {
+      if (option === q.answer) {
+        btn.classList.add("correct");
+        speak("Correct!");
+        score++;
+      } else {
+        btn.classList.add("wrong");
+        speak(`Wrong! The correct answer is ${q.answer}`);
+      }
+      setTimeout(() => {
+        current++;
+        current < quiz.length ? showQuestion() : showResult();
+      }, 1500);
+    };
+    aBtns.appendChild(btn);
+  });
+}
+
+function showResult() {
+  document.getElementById("questionBox").textContent = `🎉 You scored ${score}/${quiz.length}!`;
+  speak(`You got ${score} out of ${quiz.length}`);
+  document.getElementById("answerButtons").innerHTML = `<button onclick="location.reload()">🔁 Restart</button>`;
+  launchConfetti();
+}
+
+function downloadQuiz() {
+  const blob = new Blob([JSON.stringify(quiz, null, 2)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "quiz.json";
+  a.click();
+}
+
+function launchConfetti() {
+  const c = document.getElementById("confetti");
+  const ctx = c.getContext("2d");
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
+  let pieces = Array.from({ length: 150 }, () => ({
+    x: Math.random() * c.width,
+    y: Math.random() * c.height - c.height,
+    r: Math.random() * 6 + 4,
+    d: Math.random() * 100 + 10,
+    color: `hsl(${Math.random() * 360}, 70%, 60%)`
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    pieces.forEach(p => {
+      ctx.beginPath();
+      ctx.fillStyle = p.color;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    update();
+    requestAnimationFrame(draw);
+  }
+
+  function update() {
+    pieces.forEach(p => {
+      p.y += Math.cos(p.d) + 1 + p.r / 2;
+      if (p.y > c.height) {
+        p.x = Math.random() * c.width;
+        p.y = -10;
+      }
+    });
+  }
+
+  draw();
+}
+</script>
+</body>
+</html>

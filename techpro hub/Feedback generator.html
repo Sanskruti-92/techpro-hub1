@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📝 Smart Feedback Generator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #f0f2f5;
+      padding: 40px 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 30px;
+      color: #007acc;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #007acc;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,122,204,0.1);
+    }
+
+    textarea {
+      height: 130px;
+      resize: vertical;
+    }
+
+    .stars {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      background: #e0ecf8;
+      color: #007acc;
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .tag:hover {
+      background: #c2dff7;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      background: #007acc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background: #005fa3;
+    }
+
+    .history {
+      margin-top: 35px;
+    }
+
+    .history h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #444;
+    }
+
+    .feedback-item {
+      background: #f3f6fb;
+      padding: 12px 15px;
+      border-left: 4px solid #007acc;
+      border-radius: 6px;
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    .dark-mode {
+      background-color: #1c1c1c;
+      color: #eee;
+    }
+
+    .dark-mode .container {
+      background: #2a2a2a;
+      box-shadow: none;
+    }
+
+    .dark-mode input,
+    .dark-mode select,
+    .dark-mode textarea {
+      background: #3b3b3b;
+      border-color: #666;
+      color: #fff;
+    }
+
+    .dark-mode .tag {
+      background: #444;
+      color: #fff;
+    }
+
+    .dark-mode .feedback-item {
+      background: #333;
+      border-color: #007acc;
+      color: #eee;
+    }
+
+    .dark-mode button {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📝 Smart Feedback Generator</h1>
+
+    <label>Student Name:</label>
+    <input type="text" id="studentName" placeholder="e.g. Sanskruti Kadam">
+
+    <label>Category:</label>
+<select id="category">
+  <option value="">-- Select Category --</option>
+  <option value="Academic">Academic</option>
+  <option value="Behavior">Behavior</option>
+  <option value="Creativity">Creativity</option>
+  <option value="Participation">Participation</option>
+  <option value="Homework">Homework</option>
+  <option value="Communication">Communication</option>
+  <option value="Teamwork">Teamwork</option>
+  <option value="Time Management">Time Management</option>
+  <option value="Leadership">Leadership</option>
+  <option value="Discipline">Discipline</option>
+  <option value="Attitude">Attitude</option>
+</select>
+
+    </select>
+
+    <label>Tone:</label>
+    <select id="tone">
+      <option value="encouraging">Encouraging</option>
+      <option value="constructive">Constructive</option>
+      <option value="appreciative">Appreciative</option>
+      <option value="supportive">Supportive</option>
+      <option value="critical">Critical</option>
+      <option value="motivational">Motivational</option>
+    </select>
+
+    <label>Rating (1 to 5):</label>
+    <div class="stars">
+      <input type="range" id="rating" min="1" max="5" value="3">
+      <span id="starValue">3</span> ⭐
+    </div>
+
+    <label>Quick Tags:</label>
+    <div class="tags">
+      <div class="tag" onclick="addTag('Motivated')">Motivated</div>
+      <div class="tag" onclick="addTag('Disciplined')">Disciplined</div>
+      <div class="tag" onclick="addTag('Positive')">Positive</div>
+      <div class="tag" onclick="addTag('Focused')">Focused</div>
+      <div class="tag" onclick="addTag('Hardworking')">Hardworking</div>
+      <div class="tag" onclick="addTag('Team Player')">Team Player</div>
+      <div class="tag" onclick="addTag('Needs Attention')">Needs Attention</div>
+      <div class="tag" onclick="addTag('Respectful')">Respectful</div>
+      <div class="tag" onclick="addTag('Energetic')">Energetic</div>
+      <div class="tag" onclick="addTag('Helpful')">Helpful</div>
+      <div class="tag" onclick="addTag('Consistent')">Consistent</div>
+      <div class="tag" onclick="addTag('Creative')">Creative</div>
+      <div class="tag" onclick="addTag('Responsible')">Responsible</div>
+    </div>
+
+    <label>Generated Feedback:</label>
+    <textarea id="feedback" placeholder="Feedback will appear here..."></textarea>
+
+    <div class="buttons">
+      <button onclick="generateFeedback()">✨ Generate</button>
+      <button onclick="speakFeedback()">🔊 Read Aloud</button>
+      <button onclick="saveToLocalStorage()">💾 Save</button>
+      <button onclick="downloadFeedback()">⬇️ Download</button>
+      <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+      <button onclick="window.print()">🖨️ Print</button>
+      <button onclick="clearFields()">🧹 Clear</button>
+    </div>
+
+    <div class="history">
+      <h3>📃 Feedback History</h3>
+      <div id="historyList"></div>
+    </div>
+  </div>
+
+  <script>
+    const feedbackBox = document.getElementById("feedback");
+    const starValue = document.getElementById("starValue");
+
+    document.getElementById("rating").addEventListener('input', e => {
+      starValue.textContent = e.target.value;
+    });
+
+    function addTag(tag) {
+      feedbackBox.value += (feedbackBox.value ? ', ' : '') + tag;
+    }
+
+    function generateFeedback() {
+      const name = document.getElementById("studentName").value || "The student";
+      const category = document.getElementById("category").value || "performance";
+      const tone = document.getElementById("tone").value;
+      const rating = document.getElementById("rating").value;
+
+      const tones = {
+        encouraging: ["Great job!", "Keep it up!", "Excellent progress!"],
+        constructive: ["Needs improvement.", "Can do better.", "Focus more on tasks."],
+        appreciative: ["We truly appreciate the effort!", "Valuable contributions.", "Commendable attitude!"],
+        supportive: ["Let’s keep trying together.", "We believe in you!", "You’re capable of great things."],
+        critical: ["Immediate improvement required.", "Performance needs serious attention.", "Not meeting expectations."],
+        motivational: ["Stay strong and focused!", "Push your limits!", "Success is within your reach!"]
+      };
+
+      const toneMessages = tones[tone] || [];
+      const comment = toneMessages[Math.floor(Math.random() * toneMessages.length)];
+      const message = `${name} has shown ${rating >= 4 ? 'excellent' : rating == 3 ? 'satisfactory' : 'below average'} performance in ${category.toLowerCase()}. ${comment}`;
+      
+      feedbackBox.value = message;
+
+      const item = document.createElement("div");
+      item.className = "feedback-item";
+      item.textContent = message;
+      document.getElementById("historyList").prepend(item);
+    }
+
+    function speakFeedback() {
+      const msg = new SpeechSynthesisUtterance(feedbackBox.value);
+      window.speechSynthesis.speak(msg);
+    }
+
+    function saveToLocalStorage() {
+      const msg = feedbackBox.value;
+      if (msg) localStorage.setItem(`feedback_${Date.now()}`, msg);
+      alert("Saved to local storage!");
+    }
+
+    function downloadFeedback() {
+      const content = feedbackBox.value;
+      const blob = new Blob([content], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "feedback.txt";
+      link.click();
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    function clearFields() {
+      document.getElementById("studentName").value = "";
+      document.getElementById("category").value = "";
+      document.getElementById("tone").value = "encouraging";
+      document.getElementById("rating").value = 3;
+      document.getElementById("starValue").textContent = 3;
+      feedbackBox.value = "";
+    }
+  </script>
+</body>
+</html>

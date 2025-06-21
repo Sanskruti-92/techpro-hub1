@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>📘 Student Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f7fa;
+      margin: 0;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background: #1e1e2f;
+      color: white;
+    }
+    .tracker {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dark-mode .tracker {
+      background: #2c2c3c;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 25px;
+    }
+    .dark-mode h1 {
+      color: #ecf0f1;
+    }
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    input, button {
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #newName, #searchName {
+      flex: 1;
+      border: 1px solid #ccc;
+    }
+    #addStudentBtn, #exportBtn, #showChartBtn, #resetChartBtn, #toggleDark, #showPresentBtn, #editNameBtn {
+      background-color: #3498db;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    #addStudentBtn:hover, #exportBtn:hover, #toggleDark:hover, #showPresentBtn:hover, #editNameBtn:hover {
+      background-color: #2980b9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #ecf0f1;
+    }
+    input[type="number"], input[type="text"] {
+      width: 90%;
+    }
+    .deleteBtn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+    }
+    .deleteBtn:hover {
+      background-color: #c0392b;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .top-performer {
+      background-color: #d1f0d1 !important;
+    }
+    .grade {
+      font-weight: bold;
+    }
+    .grade.A { color: green; }
+    .grade.B { color: orange; }
+    .grade.C { color: red; }
+    .tagInput {
+      width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 5px;
+      font-size: 14px;
+    }
+    .dark-mode .tagInput {
+      background-color: #3b3b4d;
+      color: white;
+      border: 1px solid #666;
+    }
+    .dark-mode table, .dark-mode input, .dark-mode button {
+      background: #3b3b4d;
+      color: white;
+      border-color: #666;
+    }
+    #clock {
+      text-align: right;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="tracker">
+  <div id="clock"></div>
+  <h1>📘 Student Tracker</h1>
+
+  <div id="controls">
+    <input type="text" id="newName" placeholder="Enter student name" autofocus>
+    <input type="text" id="searchName" placeholder="🔍 Search student">
+    <button id="addStudentBtn">➕ Add Student</button>
+    <button id="exportBtn">📁 Export CSV</button>
+    <button id="toggleDark">🌓 Toggle Mode</button>
+    <button id="showPresentBtn">🟢 Show Present Students</button>
+  </div>
+
+  <table id="studentTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Attendance</th>
+        <th>Marks (%)</th>
+        <th>Grade</th>
+        <th>Notes</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="stats">
+    <div>Total Students: <span id="totalStudents">0</span></div>
+    <div>Average Marks: <span id="averageMarks">0%</span></div>
+    <div>Attendance: <span id="attendancePercent">0%</span></div>
+  </div>
+
+  <div id="chartSection" style="text-align: center; margin-top: 30px;">
+    <button id="showChartBtn">📊 Show Chart</button>
+    <button id="resetChartBtn">🧹 Reset Chart</button>
+    <button id="sortBtn">⬇️ Sort by Marks</button>
+    <canvas id="marksChart" height="100"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const studentTable = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+  const attendancePercentEl = document.getElementById('attendancePercent');
+  const totalStudentsEl = document.getElementById('totalStudents');
+  const averageMarksEl = document.getElementById('averageMarks');
+  const searchInput = document.getElementById('searchName');
+  let marksChart = null;
+
+  function updateStats() {
+    const rows = studentTable.querySelectorAll('tr');
+    let total = rows.length;
+    let totalMarks = 0;
+    let presentCount = 0;
+    let maxMark = -1;
+
+    rows.forEach(row => {
+      let mark = parseInt(row.querySelector('.marks').value) || 0;
+      let attendance = row.querySelector('.attCheckbox').checked;
+      totalMarks += mark;
+      if (attendance) presentCount++;
+      row.classList.remove('top-performer');
+      if (mark > maxMark) maxMark = mark;
+
+      const gradeCell = row.querySelector('.grade');
+      gradeCell.textContent = mark >= 80 ? 'A' : mark >= 50 ? 'B' : 'C';
+      gradeCell.className = 'grade ' + (mark >= 80 ? 'A' : mark >= 50 ? 'B' : 'C');
+    });
+
+    rows.forEach(row => {
+      if (parseInt(row.querySelector('.marks').value) === maxMark) {
+        row.classList.add('top-performer');
+      }
+    });
+
+    totalStudentsEl.textContent = total;
+    averageMarksEl.textContent = total ? `${(totalMarks / total).toFixed(1)}%` : '0%';
+    attendancePercentEl.textContent = total ? `${((presentCount / total) * 100).toFixed(1)}%` : '0%';
+  }
+
+  function addStudent(name) {
+    const row = studentTable.insertRow();
+    row.innerHTML = `
+      <td contenteditable="true">${name}</td>
+      <td><input type="checkbox" class="attCheckbox"></td>
+      <td><input type="number" class="marks" value="0" min="0" max="100"></td>
+      <td class="grade">C</td>
+      <td><input type="text" class="tagInput" placeholder="Add note/tag..."></td>
+      <td><button class="deleteBtn">X</button></td>
+    `;
+    row.querySelector('.deleteBtn').onclick = () => {
+      row.remove();
+      updateStats();
+      resetChart();
+    };
+    row.querySelector('.attCheckbox').onchange = updateStats;
+    row.querySelector('.marks').oninput = () => {
+      const m = parseInt(row.querySelector('.marks').value);
+      if (m > 100) row.querySelector('.marks').value = 100;
+      if (m < 0) row.querySelector('.marks').value = 0;
+      updateStats();
+    };
+    updateStats();
+  }
+
+  document.getElementById('addStudentBtn').onclick = () => {
+    const name = document.getElementById('newName').value.trim();
+    if (!name) return alert("Enter student name!");
+    addStudent(name);
+    document.getElementById('newName').value = '';
+  };
+
+  document.getElementById('showChartBtn').onclick = () => {
+    const labels = [];
+    const data = [];
+    studentTable.querySelectorAll('tr').forEach(row => {
+      labels.push(row.cells[0].textContent);
+      data.push(parseInt(row.querySelector('.marks').value));
+    });
+
+    if (marksChart) marksChart.destroy();
+    marksChart = new Chart(document.getElementById('marksChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Marks (%)',
+          data,
+          backgroundColor: '#3498db'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+  };
+
+  function resetChart() {
+    if (marksChart) {
+      marksChart.destroy();
+      marksChart = null;
+    }
+  }
+
+  document.getElementById('resetChartBtn').onclick = resetChart;
+
+  document.getElementById('exportBtn').onclick = () => {
+    let csv = "Name,Attendance,Marks,Grade,Note\n";
+    studentTable.querySelectorAll('tr').forEach(row => {
+      const name = row.cells[0].textContent;
+      const attendance = row.querySelector('.attCheckbox').checked ? "Present" : "Absent";
+      const marks = row.querySelector('.marks').value;
+      const grade = row.querySelector('.grade').textContent;
+      const tag = row.querySelector('.tagInput').value || "";
+      csv += `"${name}",${attendance},${marks},${grade},"${tag}"\n`;
+    });
+    const blob = new Blob([csv], {type: "text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "student_data.csv";
+    a.click();
+  };
+
+  document.getElementById('showPresentBtn').onclick = () => {
+    let presentNames = [];
+    studentTable.querySelectorAll('tr').forEach(row => {
+      if (row.querySelector('.attCheckbox').checked) {
+        presentNames.push(row.cells[0].textContent);
+      }
+    });
+    alert("Present Students:\n\n" + (presentNames.length ? presentNames.join('\n') : "None"));
+  };
+
+  searchInput.oninput = () => {
+    const filter = searchInput.value.toLowerCase();
+    studentTable.querySelectorAll('tr').forEach(row => {
+      const name = row.cells[0].textContent.toLowerCase();
+      row.style.display = name.includes(filter) ? '' : 'none';
+    });
+  };
+
+  document.getElementById('sortBtn').onclick = () => {
+    const rows = Array.from(studentTable.rows);
+    rows.sort((a, b) => {
+      const aMark = parseInt(a.querySelector('.marks').value);
+      const bMark = parseInt(b.querySelector('.marks').value);
+      return bMark - aMark;
+    });
+    rows.forEach(row => studentTable.appendChild(row));
+    updateStats();
+  };
+
+  document.getElementById('toggleDark').onclick = () => {
+    document.body.classList.toggle('dark-mode');
+  };
+
+  // Live clock
+  setInterval(() => {
+    document.getElementById('clock').textContent = new Date().toLocaleString();
+  }, 1000);
+</script>
+
+</body>
+</html>

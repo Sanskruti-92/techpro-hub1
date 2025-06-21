@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TeachPro Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #e1f5fe, #fff3e0);
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #0b1e2d;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+  position: fixed;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #00bfff;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 12px 0;
+}
+
+.external-link {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.external-link:hover {
+  background-color: #004466;
+  color: #cceeff;
+}
+
+.main {
+  margin-left: 270px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+.info-card {
+  width: 100%;
+  max-width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  color: #333333;
+  text-align: center;
+  height: 50%;
+}
+
+.info-card h2 {
+  margin-top: 15px;
+  font-size: 2rem;
+}
+
+.info-card p {
+  font-style: italic;
+}
+
+.clock {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333333;
+  margin: 15px 0;
+}
+
+.daily-tip {
+  font-size: 1rem;
+  color: #004d40;
+  background: #ffffff;
+  padding: 15px;
+  border: 1px solid #80cbc4;
+  border-radius: 12px;
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.widgets {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.widget-box {
+  flex: 1;
+  min-width: 260px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+
+.widget-box h3 {
+  margin-bottom: 15px;
+  color: #1a237e;
+  font-size: 1.3rem;
+}
+
+.weather-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.weather-box img {
+  width: 50px;
+}
+
+.tasks ul, .events ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tasks li, .events li {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tasks input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.highlight {
+  background: #e3f2fd;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #0d47a1;
+}
+
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>TeachPro Hub</h2>
+    <ul>
+      <li><a href="grade report.html" target="_blank" class="external-link">📊 Grade Calculator</a></li>
+      <li><a href="lesson.html" target="_blank" class="external-link">📅 Lesson Planner</a></li>
+      <li><a href="student-tracker.html" target="_blank" class="external-link">📈 Student Tracker</a></li>
+      <li><a href="Feedback generator.html" target="_blank" class="external-link">📝 Feedback Generator</a></li>
+      <li><a href="meeting.html" target="_blank" class="external-link">📞 Meeting Scheduler</a></li>
+      <li><a href="protfoilo.html" target="_blank" class="external-link">🎒 Student Portfolio</a></li>
+      <li><a href="curriculum.html" target="_blank" class="external-link">📖 Curriculum Manager</a></li>
+      <li><a href="resource.html" target="_blank" class="external-link">📂 Resource Manager</a></li>
+      <li><a href="quiz.html" target="_blank" class="external-link">🧠 Quiz Creator</a></li>
+      <li><a href="academic.html" target="_blank" class="external-link">🗓️ Academic Calendar</a></li>
+      <li><a href="Recognition.html" target="_blank" class="external-link">🏆 Recognition Tracker</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="info-card">
+      
+      <h2>👋 Welcome Back, Educator!</h2>
+      <p id="quote">"Teaching is the one profession that creates all others."</p>
+      <div id="clock" class="clock">00:00:00</div>
+      <div class="daily-tip">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Tip" style="width: 20px;" />
+        💡 Tip: Use the Lesson Planner to organize your week better!
+      </div>
+    </div>
+
+    <div class="widgets">
+      <div class="widget-box">
+        <h3>🌤️ Weather Today</h3>
+        <div class="weather-box">
+          <img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" alt="Weather Icon">
+          <div>
+            <div class="highlight">29°C, Partly Sunny</div>
+            <small>vijayapur, India</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget-box tasks">
+        <h3>📌 Quick Checklist</h3>
+        <ul>
+          <li><input type="checkbox" /> Prepare next week’s lesson</li>
+          <li><input type="checkbox" /> Review student feedback</li>
+          <li><input type="checkbox" /> Schedule parent-teacher meeting</li>
+        </ul>
+      </div>
+
+      <div class="widget-box events">
+        <h3>📅 Upcoming Events</h3>
+        <ul>
+          <li><span class="highlight">June 22:</span> Quiz review session</li>
+          <li><span class="highlight">June 23:</span> Feedback deadline</li>
+          <li><span class="highlight">June 25:</span> Staff collaboration meeting</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById("clock").textContent = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
